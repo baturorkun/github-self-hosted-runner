@@ -1,0 +1,3 @@
+runner_labels: "k8s,myproject"
+runner_name: "k8s-myproject-1"
+runner_token: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"

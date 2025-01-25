@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      #serviceAccountName: github-runner
+      containers:
+      - name: {{ .Release.Name }}
+        image: {{ .Values.image }}:{{ .Values.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: RUNNER_URL
+          value: {{ .Values.runner_url }}
+        - name: RUNNER_TOKEN
+          value: {{ .Values.runner_token }}
+        - name: RUNNER_NAME
+          value: {{ .Values.runner_name }}
+        - name: RUNNER_LABELS
+          value: {{ .Values.runner_labels }}
+        - name: TZ
+          value: {{ .Values.timezone }}
+        volumeMounts:
+        - name: runner-storage
+          mountPath: /work
+        - name: docker-sock
+          mountPath: /var/run/docker.sock
+        securityContext:
+          runAsGroup: {{ .Values.docker_group_id }}
+          runAsUser: 1000
+      volumes:
+      - name: runner-storage
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-pvc
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
