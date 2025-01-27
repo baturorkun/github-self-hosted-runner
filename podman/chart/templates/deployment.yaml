@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      #serviceAccountName: github-runner
+      containers:
+      - name: {{ .Release.Name }}
+        image: {{ .Values.image }}:{{ .Values.tag }}
+        imagePullPolicy: {{ .Values.imagePullPolicy }}
+        env:
+        - name: RUNNER_ALLOW_RUNASROOT
+          value: "true"
+        - name: RUNNER_URL
+          value: {{ .Values.runner_url }}
+        - name: RUNNER_TOKEN
+          value: {{ .Values.runner_token }}
+        - name: RUNNER_NAME
+          value: {{ .Values.runner_name }}
+        - name: RUNNER_LABELS
+          value: {{ .Values.runner_labels }}
+        - name: TZ
+          value: {{ .Values.timezone }}
+        - name: XDG_RUNTIME_DIR
+          value: /root/.local/run
+        - name: XDG_DATA_HOME
+          value: /root/.local/share
+        volumeMounts:
+        - name: runner-storage
+          mountPath: /workspace
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+          privileged: true
+      volumes:
+      - name: runner-storage
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-pvc

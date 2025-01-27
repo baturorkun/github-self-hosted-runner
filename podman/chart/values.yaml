@@ -1,0 +1,8 @@
+timezone: "Europe/Istanbul"
+runner_url: "https://github.com/YOUR_ORG_NAME"
+runner_labels: "k8s,myproject"
+runner_name: "k8s-myproject-1"
+runner_token: ""
+image: "yourregistry.com/library/github-runner"
+tag: "1"
+imagePullPolicy: "Always"
