@@ -35,11 +35,11 @@ RUN apt install -y \
 
 RUN rm -rf /var/lib/apt/lists/*
 
-# github kullanıcısını oluştur ve gerekli izinleri ver
-RUN mkdir -p /root/.local/share/containers && \
-    mkdir -p /root/.local/run && \
-    mkdir -p /root/.config/containers && \
-    echo "[storage]\ndriver = \"vfs\"" > /root/.config/containers/storage.conf && \
+# configure podman
+RUN echo "[storage]" > /etc/containers/storage.conf && \
+    echo 'driver = "vfs"' >> /etc/containers/storage.conf && \
+    echo 'runroot = "/run/containers/storage"' >> /etc/containers/storage.conf && \
+    echo 'graphroot = "/var/lib/containers/storage"' >> /etc/containers/storage.conf && \
     echo 'unqualified-search-registries = ["docker.io"]' > /etc/containers/registries.conf && \
     touch /etc/containers/nodocker && \
     touch /var/run/docker.sock

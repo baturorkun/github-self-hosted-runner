@@ -30,18 +30,19 @@ spec:
           value: {{ .Values.runner_labels }}
         - name: TZ
           value: {{ .Values.timezone }}
-        - name: XDG_RUNTIME_DIR
-          value: /root/.local/run
-        - name: XDG_DATA_HOME
-          value: /root/.local/share
         volumeMounts:
-        - name: runner-storage
+        - name: workspace-storage
           mountPath: /workspace
+        - name: containers-storage
+          mountPath: /var/lib/containers
         securityContext:
           runAsUser: 0
           runAsGroup: 0
           privileged: true
       volumes:
-      - name: runner-storage
+      - name: containers-storage
         persistentVolumeClaim:
-          claimName: {{ .Release.Name }}-pvc
+          claimName: {{ .Release.Name }}-containers-pvc
+      - name: workspace-storage
+        persistentVolumeClaim:
+          claimName: {{ .Release.Name }}-workspace-pvc
