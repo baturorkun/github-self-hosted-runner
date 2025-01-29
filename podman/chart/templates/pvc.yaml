@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Release.Name }}-workspace-pvc
 spec:
-  accessModes:a
+  accessModes:
     - ReadWriteOnce
   resources:
     requests:
